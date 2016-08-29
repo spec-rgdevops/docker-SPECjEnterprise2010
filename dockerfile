@@ -10,7 +10,7 @@ FROM ubuntu:16.04
 
 #install software property managemnet
 RUN apt-get update 
-RUN apt-get install -y software-properties-common python-software-properties unzip
+RUN apt-get install -y software-properties-common python-software-properties unzip yum
 
 # Install Java.
 RUN \
@@ -20,13 +20,6 @@ RUN \
   apt-get install -y oracle-java8-installer && \
   rm -rf /var/lib/apt/lists/* && \
   rm -rf /var/cache/oracle-jdk8-installer
-
-
-# Define working directory.
-WORKDIR /data
-
-# Define commonly used JAVA_HOME variable
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
 # Set environment variables and default password for user 'admin'
 ENV GLASSFISH_PKG=glassfish-4.1.1.zip \
@@ -44,7 +37,6 @@ RUN wget --quiet --no-check-certificate $GLASSFISH_URL && \
     echo "$MD5 *$GLASSFISH_PKG" | md5sum -c - && \
     unzip -o $GLASSFISH_PKG && \
     rm -f $GLASSFISH_PKG && \
-    yum -y remove wget unzip && rm -rf /var/cache/yum/* && \
     echo "--- Setup the password file ---" && \
     echo "AS_ADMIN_PASSWORD=" > /tmp/glassfishpwd && \
     echo "AS_ADMIN_NEWPASSWORD=${PASSWORD}" >> /tmp/glassfishpwd  && \
