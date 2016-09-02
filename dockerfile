@@ -48,6 +48,8 @@ RUN wget --quiet --no-check-certificate $GLASSFISH_URL && \
     asadmin --user=admin stop-domain && \
     rm /tmp/glassfishpwd
 
+ADD ../SPECjEnterprise2010_1.03/setup.jar
+
 # Ports being exposed
 EXPOSE 4848 8080 8181
 
