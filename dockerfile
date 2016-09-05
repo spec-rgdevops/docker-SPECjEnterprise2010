@@ -55,6 +55,16 @@ ADD glassfish.build.properties /tmp
 RUN java -jar /tmp/setup.jar -i silent && rm /tmp/setup.jar && mv /tmp/spec.build.properties /SPECjEnterprise2010-1.03 && mv /tmp/glassfish.build.properties /SPECjEnterprise2010-1.03/appservers/glassfish/build.properties
 
 RUN unzip /tmp/specdb50.zip -d /specdb && rm /tmp/specdb50.zip
+
+#SPECjEnterprise2010_Driverpatch.zip
+
+ADD SPECjEnterprise2010_OrdersDomainOnlyPatch.zip /tmp/
+RUN cd tmp && unzip -j /tmp/SPECjEnterprise2010_OrdersDomainOnlyPatch.zip \
+    && mv /tmp/OrderSession.java /SPECjEnterprise2010-1.03/src/java/ejb/org/spec/jent/ejb/orders/session \
+    && mv /tmp/PurchaseOrderMDB.java /SPECjEnterprise2010-1.03/src/java/ejb/org/spec/jent/ejb/supplier/mdb \
+    && rm /tmp/SPECjEnterprise2010_OrdersDomainOnlyPatch.zip
+
+RUN cd /SPECjEnterprise2010-1.03 && ant install && ant specj.ear.withcompile
 # Ports being exposed
 EXPOSE 4848 8080 8181
 
