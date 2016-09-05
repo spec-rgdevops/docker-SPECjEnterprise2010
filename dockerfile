@@ -50,11 +50,11 @@ RUN wget --quiet --no-check-certificate $GLASSFISH_URL && \
 
 ADD setup.jar /tmp
 ADD spec.build.properties /tmp
-ADD specdb50.zip /tmp
 ADD glassfish.build.properties /tmp
 RUN java -jar /tmp/setup.jar -i silent && rm /tmp/setup.jar && mv /tmp/spec.build.properties /SPECjEnterprise2010-1.03 && mv /tmp/glassfish.build.properties /SPECjEnterprise2010-1.03/appservers/glassfish/build.properties
 
-RUN unzip /tmp/specdb50.zip -d /specdb && rm /tmp/specdb50.zip
+ADD specdb.zip /tmp
+RUN unzip /tmp/specdb.zip -d / && rm /tmp/specdb.zip
 
 #SPECjEnterprise2010_Driverpatch.zip
 
