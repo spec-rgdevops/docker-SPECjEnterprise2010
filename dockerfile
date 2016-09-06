@@ -57,6 +57,10 @@ RUN cd tmp && unzip -j /tmp/SPECjEnterprise2010_OrdersDomainOnlyPatch.zip && \
 
 ADD eclipselink_persistence.xml /SPECjEnterprise2010-1.03/src/resources/ejb/META-INF/persistence.xml
 
+#patch: add beans.xml to avoid NullPointerExceptions
+#see http://stackoverflow.com/questions/26822225/glassfish-4-1-bug-session-invalidate-nullpointer-exception
+ADD beans.xml /SPECjEnterprise2010-1.03/src/web-docroot/WEB-INF/beans.xml
+
 RUN cd /SPECjEnterprise2010-1.03 && \
     ant install && \
     ant specj.ear.withcompile
