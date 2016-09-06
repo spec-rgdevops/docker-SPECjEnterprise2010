@@ -76,5 +76,7 @@ RUN cd /SPECjEnterprise2010-1.03 && \
 # Ports being exposed
 EXPOSE 4848 8080 8181
 
+ADD start.sh /
+
 # Start asadmin console and the domain
 CMD ["asadmin", "start-domain", "-v"]
