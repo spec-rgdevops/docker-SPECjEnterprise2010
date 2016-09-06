@@ -67,6 +67,8 @@ RUN cd tmp && unzip -j /tmp/SPECjEnterprise2010_OrdersDomainOnlyPatch.zip && \
     mv /tmp/PurchaseOrderMDB.java /SPECjEnterprise2010-1.03/src/java/ejb/org/spec/jent/ejb/supplier/mdb && \
     rm /tmp/SPECjEnterprise2010_OrdersDomainOnlyPatch.zip
 
+ADD eclipselink_persistence.xml /SPECjEnterprise2010-1.03/src/resources/ejb/META-INF/persistence.xml
+
 RUN cd /SPECjEnterprise2010-1.03 && \
     ant install && \
     ant specj.ear.withcompile
