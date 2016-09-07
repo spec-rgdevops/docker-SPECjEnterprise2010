@@ -1,11 +1,17 @@
 version: '2'
 services:
-  benchmark:
-    image: specjenterprise2010
+  specjserver:
+    image: specjserver
+    container_name: specjserver
     ports:
     - "4848:4848"
     - "8080:8080"
     - "8181:8181"
-    #volumes:
-    #- .:/code
-    #- logvolume01:/var/log
+    #volumes: if required
+  specjfaban:
+    image: specjfaban
+    container_name: specjfaban
+    ports:
+    - "9980:9980"
+    depends_on:
+      - specjserver
