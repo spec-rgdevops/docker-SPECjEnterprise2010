@@ -10,7 +10,7 @@ FROM ubuntu:16.04
 
 #install software property managemnet
 RUN apt-get update 
-RUN apt-get install -y software-properties-common python-software-properties unzip yum ant
+RUN apt-get install -y software-properties-common python-software-properties unzip yum ant sed vim
 
 # Install Java.
 RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
@@ -39,6 +39,8 @@ ADD specjent2010_cd/setup.jar /tmp
 RUN java -jar /tmp/setup.jar -i silent && \
     rm /tmp/setup.jar
 
+RUN sed -i "s#<class>org.spec.jent.ejb.orders.entity.OrderLinePK</class>#<class>org.spec.jent.ejb.orders.entity.OrderLinePK</class>\n    <shared-cache-mode>NONE</shared-cache-mode>\n    <properties>\n      <property name=\"eclipselink.query-results-cache\" value=\"false\"/>\n      <property name=\"eclipselink.cache.shared.default\" value=\"false\"/>\n      <property name=\"eclipselink.refresh\" value=\"true\"/>\n    </properties>#g" /SPECjEnterprise2010-1.03/src/resources/ejb/META-INF/persistence.xml
+
 ADD spec.build.properties /tmp
 ADD glassfish.build.properties /tmp
 RUN mv /tmp/spec.build.properties /SPECjEnterprise2010-1.03/build.properties && \
@@ -55,7 +57,7 @@ RUN cd tmp && unzip -j /tmp/SPECjEnterprise2010_OrdersDomainOnlyPatch.zip && \
     mv /tmp/PurchaseOrderMDB.java /SPECjEnterprise2010-1.03/src/java/ejb/org/spec/jent/ejb/supplier/mdb && \
     rm /tmp/SPECjEnterprise2010_OrdersDomainOnlyPatch.zip
 
-ADD eclipselink_persistence.xml /SPECjEnterprise2010-1.03/src/resources/ejb/META-INF/persistence.xml
+#ADD eclipselink_persistence.xml /SPECjEnterprise2010-1.03/src/resources/ejb/META-INF/persistence.xml
 
 #patch: add beans.xml to avoid NullPointerExceptions
 #see http://stackoverflow.com/questions/26822225/glassfish-4-1-bug-session-invalidate-nullpointer-exception
