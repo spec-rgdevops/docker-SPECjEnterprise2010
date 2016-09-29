@@ -1,43 +1,4 @@
-#
-# Oracle Java 8 Dockerfile
-#
-# https://github.com/dockerfile/java
-# https://github.com/dockerfile/java/tree/master/oracle-java8
-#
-
-# Pull base image.
-FROM ubuntu:16.04
-
-#install software property managemnet
-RUN apt-get update 
-RUN apt-get install -y software-properties-common python-software-properties unzip yum ant sed vim
-
-# Install Java.
-RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
-    add-apt-repository -y ppa:webupd8team/java && \
-    apt-get update && \
-    apt-get install -y oracle-java8-installer && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /var/cache/oracle-jdk8-installer
-
-# Set environment variables and password for user 'admin'
-ENV GLASSFISH_PKG=glassfish-4.1.1.zip \
-    GLASSFISH_URL=http://download.oracle.com/glassfish/4.1.1/release/glassfish-4.1.1.zip \
-    GLASSFISH_HOME=/glassfish4 \
-    MD5=4e7ce65489347960e9797d2161e0ada2 \
-    PATH=$PATH:/glassfish4/bin \
-    PASSWORD=password \
-    JAVA_HOME=/usr/lib/jvm/java-8-oracle
-
-# Download and extract GlassFish
-RUN wget --quiet --no-check-certificate $GLASSFISH_URL && \
-    echo "$MD5 *$GLASSFISH_PKG" | md5sum -c - && \
-    unzip -o $GLASSFISH_PKG && \
-    rm -f $GLASSFISH_PKG 
-
-ADD specjent2010_cd/setup.jar /tmp
-RUN java -jar /tmp/setup.jar -i silent && \
-    rm /tmp/setup.jar
+FROM specj_base
 
 RUN sed -i "s#<class>org.spec.jent.ejb.orders.entity.OrderLinePK</class>#<class>org.spec.jent.ejb.orders.entity.OrderLinePK</class>\n    <shared-cache-mode>NONE</shared-cache-mode>\n    <properties>\n      <property name=\"eclipselink.query-results-cache\" value=\"false\"/>\n      <property name=\"eclipselink.cache.shared.default\" value=\"false\"/>\n      <property name=\"eclipselink.refresh\" value=\"true\"/>\n    </properties>#g" /SPECjEnterprise2010-1.03/src/resources/ejb/META-INF/persistence.xml
 
