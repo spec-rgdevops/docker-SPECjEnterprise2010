@@ -9,7 +9,7 @@ FROM ubuntu:16.04
 
 #install software property managemnet
 RUN apt-get update && \
-    apt-get install -y software-properties-common python-software-properties unzip yum ant sed vim
+    apt-get install -y software-properties-common python-software-properties unzip yum ant sed vim netcat-openbsd
 
 # Install Java.
 RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
@@ -37,3 +37,8 @@ RUN wget --quiet --no-check-certificate $GLASSFISH_URL && \
 ADD specjent2010_cd/setup.jar /tmp
 RUN java -jar /tmp/setup.jar -i silent && \
     rm /tmp/setup.jar
+
+ADD spec.build.properties /tmp
+ADD glassfish.build.properties /tmp
+RUN mv /tmp/spec.build.properties /SPECjEnterprise2010-1.03/build.properties && \
+    mv /tmp/glassfish.build.properties /SPECjEnterprise2010-1.03/appservers/glassfish/build.properties

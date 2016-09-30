@@ -1,17 +1,37 @@
 version: '2'
 services:
-  specjserver:
-    image: specjserver
-    container_name: specjserver
+  specj_server:
+    image: specj_server
+    container_name: specj_server
     ports:
-    - "4848:4848"
-    - "8080:8080"
-    - "8181:8181"
+      - "4848:4848"
+      - "8080:8080"
+      - "8181:8181"
     #volumes: if required
-  specjfaban:
-    image: specjfaban
-    container_name: specjfaban
+    networks:
+      specj:
+        ipv4_address: 172.16.238.2
+  specj_driver:
+    image: specj_driver
+    container_name: specj_driver
     ports:
-    - "9980:9980"
+      - "9980:9980"
+    environment:
+      - JAVA_HOME=/usr/lib/jvm/java-8-oracle/jre
     depends_on:
-      - specjserver
+      - specj_server
+    networks:
+      specj:
+        ipv4_address: 172.16.238.3
+networks:
+  specj:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.16.238.0/24
+        gateway: 172.16.238.1
+      # - subnet: 2001:3984:3989::/64
+      #   gateway: 2001:3984:3989::1

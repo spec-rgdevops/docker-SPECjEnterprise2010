@@ -2,15 +2,8 @@ FROM specj_base
 
 RUN sed -i "s#<class>org.spec.jent.ejb.orders.entity.OrderLinePK</class>#<class>org.spec.jent.ejb.orders.entity.OrderLinePK</class>\n    <shared-cache-mode>NONE</shared-cache-mode>\n    <properties>\n      <property name=\"eclipselink.query-results-cache\" value=\"false\"/>\n      <property name=\"eclipselink.cache.shared.default\" value=\"false\"/>\n      <property name=\"eclipselink.refresh\" value=\"true\"/>\n    </properties>#g" /SPECjEnterprise2010-1.03/src/resources/ejb/META-INF/persistence.xml
 
-ADD spec.build.properties /tmp
-ADD glassfish.build.properties /tmp
-RUN mv /tmp/spec.build.properties /SPECjEnterprise2010-1.03/build.properties && \
-    mv /tmp/glassfish.build.properties /SPECjEnterprise2010-1.03/appservers/glassfish/build.properties
-
 ADD specdb.zip /tmp
 RUN unzip /tmp/specdb.zip -d / && rm /tmp/specdb.zip
-
-#SPECjEnterprise2010_Driverpatch.zip
 
 ADD SPECjEnterprise2010_OrdersDomainOnlyPatch.zip /tmp/
 RUN cd tmp && unzip -j /tmp/SPECjEnterprise2010_OrdersDomainOnlyPatch.zip && \
@@ -30,6 +23,6 @@ RUN cd /SPECjEnterprise2010-1.03 && \
 
 EXPOSE 4848 8080 8181
 
-ADD start.sh /
+ADD start_server.sh /
 
-CMD ["/bin/bash", "/start.sh"]
+CMD ["/bin/bash", "/start_server.sh"]

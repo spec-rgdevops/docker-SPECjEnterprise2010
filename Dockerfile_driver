@@ -1,0 +1,29 @@
+FROM specj_base
+
+#driver should test only the orders domain
+ADD SPECjEnterprise2010_Driverpatch.zip /tmp/
+RUN cd tmp && unzip -j /tmp/SPECjEnterprise2010_Driverpatch.zip && \
+    mv /tmp/DealerDriver.java    /SPECjEnterprise2010-1.03/src/java/driver/org/spec/jent/driver/ && \
+    mv /tmp/AbstractSJELoad.java /SPECjEnterprise2010-1.03/src/java/driver/org/spec/jent/driver/http/ && \
+    mv /tmp/HttpDealer.java      /SPECjEnterprise2010-1.03/src/java/driver/org/spec/jent/driver/http/ && \
+    rm /tmp/SPECjEnterprise2010_Driverpatch.zip
+
+EXPOSE 9980
+
+ADD run.xml.specjdriverharness /tmp/
+RUN cp /tmp/run.xml.specjdriverharness /SPECjEnterprise2010-1.03/faban/run.xml.template
+
+ADD build.xml /SPECjEnterprise2010-1.03/faban/
+
+WORKDIR /SPECjEnterprise2010-1.03 
+RUN ant specj.ear.withcompile && \
+    ant driver.jar && \
+    ant faban.harness.jar
+WORKDIR /
+
+ADD start_driver.sh /
+
+RUN mkdir /SPECjEnterprise2010-1.03/faban/harness/faban/config/profiles && \
+    mv /tmp/run.xml.specjdriverharness /SPECjEnterprise2010-1.03/faban/harness/faban/config/profiles
+
+CMD ["/bin/bash", "/start_driver.sh"]
